@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>วิถีแห่งเต๋า — Beta</title>
+<style>
+:root{--bg:#10131b;--panel:#1a2030;--panel2:#222b3d;--text:#edf2f7;--muted:#aab6c8;--gold:#e8c46a;--line:#354158}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#26334b,#10131b 55%);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans Thai",sans-serif;min-height:100vh}
+header{padding:28px 16px 18px;text-align:center;border-bottom:1px solid var(--line)}
+h1{margin:0;color:var(--gold);font-size:clamp(26px,6vw,38px)}header p{margin:7px 0 0;color:var(--muted)}
+main{max-width:900px;margin:20px auto;padding:0 14px 40px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.card{background:linear-gradient(150deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:17px;box-shadow:0 8px 25px #0004}
+h2{font-size:18px;margin:0 0 12px;color:var(--gold)}.muted{color:var(--muted);font-size:14px}
+label{display:block;margin:10px 0 5px;color:var(--muted);font-size:14px}
+input,select,button{font:inherit;border-radius:10px;border:1px solid var(--line);padding:10px;background:#111827;color:var(--text);width:100%}
+button{background:#394b68;border:0;font-weight:700;cursor:pointer;margin-top:9px}button:hover{filter:brightness(1.15)}button.gold{background:#9a7935;color:#fff}button.secondary{background:#30394b}
+.stat{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}.bar{height:10px;background:#0c111a;border-radius:20px;overflow:hidden;margin:8px 0}.bar span{display:block;height:100%;background:linear-gradient(90deg,#b18a42,#f0d98a);width:0%}
+.pill{display:inline-block;padding:4px 9px;border-radius:99px;background:#303b50;color:#d9e4f5;font-size:12px;margin:2px}
+#story{min-height:80px;line-height:1.7}.notice{font-size:12px;color:var(--muted);text-align:center;margin-top:18px}
+</style>
+</head>
+<body>
+<header><h1>วิถีแห่งเต๋า</h1><p>DAO CULTIVATION · BETA VERSION</p></header>
+<main>
+<div class="grid">
+<section class="card">
+<h2>เริ่มต้นเส้นทาง</h2>
+<label for="name">ชื่อตัวละคร</label><input id="name" maxlength="18" placeholder="ตั้งชื่อตัวละคร">
+<label for="path">เลือกวิถี</label><select id="path"><option>เซียน</option><option>สมดุล</option><option>มาร</option></select>
+<label for="school">เลือกสาขาวิชา</label><select id="school"><option>เต๋า</option><option>พุทธ</option><option>กระบี่</option><option>มาร</option></select>
+<button class="gold" id="create">สร้าง / อัปเดตตัวละคร</button>
+<p class="muted">ข้อมูลจะบันทึกอัตโนมัติในเบราว์เซอร์เครื่องนี้</p>
+</section>
+<section class="card">
+<h2>สถานะตัวละคร</h2>
+<div class="stat"><span>ชื่อ</span><strong id="showName">ยังไม่มี</strong></div>
+<div class="stat"><span>วิถี</span><strong id="showPath">—</strong></div>
+<div class="stat"><span>สาขาวิชา</span><strong id="showSchool">—</strong></div>
+<div class="stat"><span>ขั้นบำเพ็ญเพียร</span><strong id="stage">ขั้น 1 · หลอมกาย</strong></div>
+<div class="stat"><span>ระดับย่อย</span><strong id="level">1 / 9</strong></div>
+<div class="stat"><span>พลังปราณ</span><strong id="qi">0 / 100</strong></div>
+<div class="bar"><span id="bar"></span></div>
+<div class="stat"><span>จิตมาร</span><strong id="demon">0 / 100</strong></div>
+</section>
+<section class="card">
+<h2>ฝึกฝนประจำวัน</h2>
+<p class="muted">สะสมพลังปราณเพื่อเพิ่มระดับ เมื่อเต็ม 100 แตะทะลวงขั้นเพื่อไปต่อ</p>
+<button id="train">ฝึกฝน +20 พลังปราณ</button>
+<button class="gold" id="breakthrough">ทะลวงขั้น</button>
+<button class="secondary" id="event">พบเหตุการณ์</button>
+<button class="secondary" id="reset">เริ่มตัวละครใหม่</button>
+</section>
+<section class="card">
+<h2>บันทึกการเดินทาง</h2>
+<div id="story">เมื่อสร้างตัวละคร เรื่องราวการเดินทางจะเริ่มต้นขึ้น…</div>
+<p class="muted">12 ขั้น · ขั้นละ 9 ระดับ · 3 วิถี · 4 สาขาวิชา</p>
+</section>
+</div>
+<p class="notice">รุ่นเบต้า: เล่นได้ในเบราว์เซอร์ และบันทึกความคืบหน้าไว้ในเครื่องที่เปิดเล่น</p>
+</main>
+<script>
+const stages=["หลอมกาย","รวบรวมปราณ","สร้างรากฐาน","แก่นทองคำ","กำเนิดจิต","แปรวิญญาณ","หลอมสุญตา","รวมเต๋า","ก้าวข้ามนภา","ราชันเซียน","จักรพรรดิเต๋า","เหนือสรรพสิ่ง"];
+const colors=["#9aa7b8","#65b98b","#62a9d8","#e2bd58","#b28be0","#65c9c2","#7d91d8","#d18bba","#e49a60","#d5dce8","#e7c46c","#ffffff"];
+let s=JSON.parse(localStorage.getItem("daoBeta")||"null")||{name:"",path:"เซียน",school:"เต๋า",stage:0,level:1,qi:0,demon:0,story:"เมื่อสร้างตัวละคร เรื่องราวการเดินทางจะเริ่มต้นขึ้น…"};
+const $=id=>document.getElementById(id);
+function save(){localStorage.setItem("daoBeta",JSON.stringify(s));render()}
+function log(t){s.story=t;save()}
+function render(){
+$("name").value=s.name;$("path").value=s.path;$("school").value=s.school;
+$("showName").textContent=s.name||"ยังไม่มี";$("showPath").textContent=s.path;$("showSchool").textContent=s.school;
+$("stage").textContent=`ขั้น ${s.stage+1} · ${stages[s.stage]}`;$("stage").style.color=colors[s.stage];
+$("level").textContent=`${s.level} / 9`;$("qi").textContent=`${s.qi} / 100`;$("bar").style.width=s.qi+"%";
+$("demon").textContent=`${s.demon} / 100`;$("story").textContent=s.story;
+}
+$("create").onclick=()=>{s.name=$("name").value.trim()||"ผู้ฝึกตน";s.path=$("path").value;s.school=$("school").value;log(`${s.name} เริ่มต้นเส้นทางวิถี${s.path} และเลือกศึกษาสาขา${s.school}`)};
+$("train").onclick=()=>{s.qi=Math.min(100,s.qi+20);log(`${s.name||"ผู้ฝึกตน"} ฝึกฝนอย่างสงบ ได้รับพลังปราณ 20 หน่วย${s.qi===100?" พลังปราณเต็มแล้ว สามารถทะลวงขั้นได้":""}`)};
+$("breakthrough").onclick=()=>{
+if(s.qi<100){log("พลังปราณยังไม่เต็ม ต้องฝึกฝนให้ครบ 100 ก่อนจึงจะทะลวงขั้นได้");return}
+if(s.level<9){s.level++;s.qi=0;log(`ทะลวงระดับย่อยสำเร็จ! ตอนนี้อยู่ระดับ ${s.level} ของขั้น${stages[s.stage]}`)}
+else if(s.stage<11){s.stage++;s.level=1;s.qi=0;s.demon=Math.min(100,s.demon+8);log(`ทะลวงสู่ขั้น ${s.stage+1} · ${stages[s.stage]} สำเร็จ! จิตมารเพิ่มขึ้นเล็กน้อย`)}
+else{log("คุณก้าวถึงขั้นสูงสุดของเบต้านี้แล้ว เส้นทางต่อไปจะเปิดในอัปเดตถัดไป")}
+save();
+};
+$("event").onclick=()=>{
+const events=["พบผู้เฒ่าผู้มอบคำแนะนำ ได้รับพลังปราณ 10 หน่วย","ค้นพบตำราวิชาเก่าแก่ จิตใจสงบลง จิตมารลด 5 หน่วย","เจอสถานที่สงบเหมาะแก่การฝึก ได้รับพลังปราณ 15 หน่วย","เผชิญบททดสอบทางใจ จิตมารเพิ่ม 5 หน่วย"];
+const e=events[Math.floor(Math.random()*events.length)];
+if(e.includes("10 หน่วย"))s.qi=Math.min(100,s.qi+10);
+if(e.includes("15 หน่วย"))s.qi=Math.min(100,s.qi+15);
+if(e.includes("ลด 5"))s.demon=Math.max(0,s.demon-5);
+if(e.includes("เพิ่ม 5"))s.demon=Math.min(100,s.demon+5);
+log(e);
+};
+$("reset").onclick=()=>{if(confirm("เริ่มตัวละครใหม่และลบความคืบหน้าเดิมในเครื่องนี้หรือไม่?")){s={name:"",path:"เซียน",school:"เต๋า",stage:0,level:1,qi:0,demon:0,story:"เริ่มต้นการเดินทางครั้งใหม่…"};save()}};
+render();
+</script>
+</body></html>
